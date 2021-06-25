@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 class Animal {
     constructor(name) {
         this._health = 100.00;
