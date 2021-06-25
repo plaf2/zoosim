@@ -61,13 +61,15 @@ class Elephant extends Animal {
     }
 
     willDie() {
-        if (this.canWalk) {
-            this.canWalk = this.health < 70;
-            return false;
-        } else if (this.health >= 70){
+        if (this.health >= 70) {
             this.canWalk = true;
             return false;
-        } else {
+        }
+        if (this.canWalk && this.health < 70) {
+            this.canWalk = false;
+            return false;
+        }
+        if (!this.canWalk && this.health < 70) {
             this.canWalk = false;
             return true;
         }
@@ -103,31 +105,41 @@ class Zoo {
     }
 
     initZoo() {
-        // initializes 5 of each animal
-        for (let i = 0; i < 5; i++) {
-            let n = i + 1;
-            this.animals.push(new Elephant("Elephant " + n));
-        }
-
-        for (let i = 0; i < 5; i++) {
-            let n = i + 1;
-            this.animals.push(new Monkey("Monkey " + n));
-        }
-
-        for (let i = 0; i < 5; i++) {
-            let n = i + 1;
-            this.animals.push(new Giraffe("Giraffe " + n));
-        }
-        
-        // attach to dom element
+        // attach zoo elements to site
         this._site = document.getElementById("zoo");
-        this.animals.forEach(animal => {
+
+        let appendAnimal = (animal) => {
             let li = document.createElement("li");
             li.id = animal.name;
-            li.innerText = animal.name + " " + animal.health + "%";
+            li.innerText = animal.name + " " + animal.health + "% health";
             this._site.appendChild(li);    
-        });
+        };
 
+        // initializes 5 of each animal
+        let n;
+        let animal;
+        for (let i = 0; i < 5; i++) {
+            n = i + 1;
+            animal = new Elephant("Elephant" + n);
+            this.animals.push(animal);
+            appendAnimal(animal)
+        }
+
+        for (let i = 0; i < 5; i++) {
+            n = i + 1;
+            animal = new Monkey("Monkey" + n);
+            this.animals.push(animal);
+            appendAnimal(animal);
+        }
+
+        for (let i = 0; i < 5; i++) {
+            n = i + 1;
+            animal = new Giraffe("Giraffe" + n);
+            this.animals.push(animal);
+            appendAnimal(animal);
+        }
+        
+        // set up event listeners
         let feedButton = document.getElementById("feed_button");
         feedButton.addEventListener("click", () => this.feedAnimals());
 
@@ -167,7 +179,7 @@ class Zoo {
 
     elapseHour() {
         this.hoursElapsed += 1;
-        // TOOD: check if this is kosher
+
         this._timeElapsedElement.innerText = "You have spent " + this.hoursElapsed + " hours in the zoo";
         
         // reduce each animal's health by a random percentage between 0-20;
@@ -181,16 +193,17 @@ class Zoo {
     updateAnimals() {
         for (let animal of this.animals) {
             // update which animals have died
-            if (animal.willDie()){
+            if (!animal.isDead && animal.willDie()){
                 animal.die();
             }
 
             // update ui
             let li = document.getElementById(animal.name);
+            let health = animal.health.toFixed(2);
             if (animal.isDead) {
-                li.innerText = animal.name + " DEAD at " + animal.health + "%";
+                li.innerText = animal.name + " DEAD at " + health + "% health";
             } else {
-                li.innerText = animal.name + " " + animal.health + "%";
+                li.innerText = animal.name + " " + health + "% health";
             }
         }
     }
