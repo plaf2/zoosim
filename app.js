@@ -6,6 +6,7 @@ class Animal {
         this.name = name;
     }
 
+    // gets or sets a value indicating if the animal is dead
     get isDead() {
         return this._isDead;
     }
@@ -14,6 +15,7 @@ class Animal {
         this._isDead = value;
     }
 
+    // gets or sets a value indicating the current health of the animal
     get health() {
         return this._health;
     }
@@ -22,7 +24,8 @@ class Animal {
         this._health = value;
     }
 
-
+    // sets the health of an animal to the given value
+    // does not set the value if the animal is dead.
     calculateHealth(value) {
         if (!this.isDead) {
             // set health to value so long as it is less than 100 percent
@@ -42,6 +45,7 @@ class Animal {
         this.calculateHealth(health);
     }
 
+    // reduces the health of the animal by the given percentage
     reduceHealth(value) {
         let percent = this.health * value;
         let health = this.health - percent;
